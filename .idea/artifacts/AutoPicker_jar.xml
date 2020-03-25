@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="AutoPicker:jar">
+    <output-path>$PROJECT_DIR$/../bungeecord/Hub/plugins</output-path>
+    <root id="archive" name="AutoPicker.jar">
+      <element id="module-output" name="AutoPicker" />
+    </root>
+  </artifact>
+</component>
