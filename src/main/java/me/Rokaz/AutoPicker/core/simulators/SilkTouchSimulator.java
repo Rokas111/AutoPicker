@@ -14,7 +14,7 @@ import java.util.List;
 public class SilkTouchSimulator implements ISimulator {
     public List<ItemStack> simulate(Player p, Block drop, int level) {
         List<ItemStack> items = new ArrayList<>();
-        if (SilkTouchMaterial.isSupported(drop))  items.add(new ItemStack(drop.getType(),1));
+        if (SilkTouchMaterial.isSupported(drop))  items.add(new ItemStack(drop.getType(),1,drop.getState().getData().getData()));
         return items;
     }
 }
