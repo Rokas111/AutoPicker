@@ -36,7 +36,7 @@ public enum SilkTouchMaterial {
     EMERALD_ORE(new SinceVersion(Version.MC1_8_R3,"EMERALD_ORE")),
     ENDER_CHEST(new SinceVersion(Version.MC1_8_R3,"ENDER_CHEST")),
     GLASS(new SinceVersion(Version.MC1_8_R3,"GLASS")),
-    GLASS_PANE(new SinceVersion(Version.MC1_8_R3,"GLASS_PANE")),
+    GLASS_PANE(new SinceVersion(Version.MC1_8_R3,"THIN_GLASS"),new SinceVersion(Version.MC1_13_R1,"GLASS_PANE")),
     STAINED_GLASS_PANE(new SinceVersion(Version.MC1_8_R3,"STAINED_GLASS_PANE")),
     STAINED_GLASS(new SinceVersion(Version.MC1_8_R3,"STAINED_GLASS")),
     GLOWSTONE(new SinceVersion(Version.MC1_8_R3,"GLOWSTONE")),
@@ -60,7 +60,7 @@ public enum SilkTouchMaterial {
     TURTLE_EGG(new SinceVersion(Version.MC1_13_R1,"TURTLE_EGG"));
     private List<SinceVersion> sinces;
     private SilkTouchMaterial(SinceVersion... sinces) {
-        this.sinces = Arrays.stream(sinces).filter(since -> since.getVersion().getVersionId() >= Version.getVersion().getVersionId()).collect(Collectors.toList());
+        this.sinces = Arrays.stream(sinces).filter(since -> since.getVersion().getVersionId() <= Version.getVersion().getVersionId()).collect(Collectors.toList());
     }
     public Material getMaterial() {
         if (sinces.isEmpty()) return null;
@@ -70,7 +70,7 @@ public enum SilkTouchMaterial {
                 s = since;
             }
         }
-        return Material.valueOf(s.getOutput());
+        return Material.getMaterial(s.getOutput());
     }
     public static boolean isSupported(Block b) {
         return Arrays.asList(SilkTouchMaterial.values()).stream().anyMatch(material -> material.getMaterial() != null && material.getMaterial().equals(b.getType()));

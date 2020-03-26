@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class FortuneSimulator implements ISimulator {
     public List<ItemStack> simulate(Player p, Block drop, int level) {
-        List<ItemStack> items = new ArrayList<>(drop.getDrops(p.getInventory().getItemInMainHand()));
+        List<ItemStack> items = new ArrayList<>(drop.getDrops(p.getItemInHand()));
         Random r = new Random();
         return items.stream().map(item -> {
             try {

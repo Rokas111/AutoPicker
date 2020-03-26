@@ -16,6 +16,6 @@ public class Message implements ConfigAdaptable {
         this.message = ChatColor.translateAlternateColorCodes('&',message);
     }
     public ConfigSection adapt(String name) {
-        return new ConfigSection().add(name,ChatColor.stripColor(message));
+        return new ConfigSection().add(name,message.replaceAll("§","&"));
     }
 }

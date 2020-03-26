@@ -4,6 +4,7 @@ import me.Rokaz.AutoPicker.core.config.unit.MessageConfig;
 import me.Rokaz.AutoPicker.core.simulators.FortuneSimulator;
 import me.Rokaz.AutoPicker.core.simulators.SilkTouchSimulator;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -28,13 +29,12 @@ public class BreakRegistry implements Listener {
     public void onBreak(BlockBreakEvent e) {
         Player p = e.getPlayer();
         ItemStack item = p.getItemInHand();
-        if (!e.isCancelled() && AutoPicker.apc.isEnabled()) {
-            e.setDropItems(false);
+        if (!e.isCancelled() && AutoPicker.apc.isEnabled() && p.getGameMode() == GameMode.SURVIVAL) {
             List<ItemStack> items;
             if (item.hasItemMeta() && item.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH) && !new SilkTouchSimulator().simulate(p,e.getBlock(),item.getItemMeta().getEnchantLevel(Enchantment.SILK_TOUCH)).isEmpty()) {
                 items = new SilkTouchSimulator().simulate(p,e.getBlock(),item.getItemMeta().getEnchantLevel(Enchantment.SILK_TOUCH));
             } else  {
-                items = new ArrayList<>(e.getBlock().getDrops(p.getInventory().getItemInMainHand()));
+                items = new ArrayList<>(e.getBlock().getDrops(p.getItemInHand()));
                 if (item.hasItemMeta() && item.getItemMeta().hasEnchant(Enchantment.LOOT_BONUS_BLOCKS)) items = new FortuneSimulator().simulate(p,e.getBlock(),item.getItemMeta().getEnchantLevel(Enchantment.LOOT_BONUS_BLOCKS));
                 items = items.stream().map(BreakRegistry::attemptSmelt).collect(Collectors.toList());
             }
@@ -44,6 +44,8 @@ public class BreakRegistry implements Listener {
             }
             if (full) p.sendMessage(AutoPicker.mc.obtain(MessageConfig.INVENTORY_FULL_MESSAGE_KEY,p).getMessage());
             AutoPicker.brokenBlocks += 1;
+            e.setCancelled(true);
+            e.getBlock().getLocation().getBlock().setType(Material.AIR);
             p.updateInventory();
         }
     }

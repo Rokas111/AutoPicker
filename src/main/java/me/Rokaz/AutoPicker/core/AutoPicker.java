@@ -5,7 +5,7 @@ import me.Rokaz.AutoPicker.core.cmd.CommandManager;
 import me.Rokaz.AutoPicker.core.config.AutoPickerConfig;
 import me.Rokaz.AutoPicker.core.config.unit.MessageConfig;
 import me.Rokaz.AutoPicker.lib.datatypes.Message;
-import org.bstats.bukkit.Metrics;
+import me.Rokaz.AutoPicker.lib.metrics.Metrics;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,10 +20,12 @@ public class AutoPicker extends JavaPlugin {
     public static CommandManager cm;
     public static MessageConfig mc;
     public static AutoPickerConfig apc;
+    public static BreakRegistry br;
     public static Metrics m;
-    protected static int brokenBlocks = 0;
+    static int brokenBlocks = 0;
     public void onEnable() {
         cm = new CommandManager(this);
+        br = new BreakRegistry(this);
         registerConfigs();
         m = new Metrics(this,6878);
         m.addCustomChart(new Metrics.SingleLineChart("blocksBroken",() -> {
@@ -35,6 +37,11 @@ public class AutoPicker extends JavaPlugin {
     private void registerConfigs() {
         apc = new AutoPickerConfig();
         mc = new MessageConfig();
+        setupDefaults();
+    }
+    private void setupDefaults() {
+        mc.addDefault("inventoryFullMessage",new Message("&cYour inventory is full"));
+        mc.setup();
     }
 
 }
