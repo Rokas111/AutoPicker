@@ -1,5 +1,6 @@
 package me.Rokaz.AutoPicker.core;
 
+import lombok.Getter;
 import me.Rokaz.AutoPicker.core.config.unit.MessageConfig;
 import me.Rokaz.AutoPicker.core.simulators.FortuneSimulator;
 import me.Rokaz.AutoPicker.core.simulators.SilkTouchSimulator;
@@ -21,7 +22,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BreakRegistry implements Listener {
+    private final static String AUTO_SMELT_PERMISSION = "AutoPicker.autosmelt";
     private final static List<Material> SMELTABLES = Arrays.asList(Material.GOLD_ORE,Material.IRON_ORE);
+    private final static HashMap<Player,Boolean> AUTOPICKER_PLAYERS = new HashMap<>();
     public BreakRegistry(Plugin pl) {
         pl.getServer().getPluginManager().registerEvents(this,pl);
     }
@@ -29,14 +32,14 @@ public class BreakRegistry implements Listener {
     public void onBreak(BlockBreakEvent e) {
         Player p = e.getPlayer();
         ItemStack item = p.getItemInHand();
-        if (!e.isCancelled() && AutoPicker.apc.isEnabled() && p.getGameMode() == GameMode.SURVIVAL) {
+        if (!e.isCancelled() && (AUTOPICKER_PLAYERS.containsKey(p)|| AutoPicker.apc.isEnabled()) && (!AUTOPICKER_PLAYERS.containsKey(p) || AUTOPICKER_PLAYERS.get(p)) && p.getGameMode() == GameMode.SURVIVAL) {
             List<ItemStack> items;
             if (item.hasItemMeta() && item.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH) && !new SilkTouchSimulator().simulate(p,e.getBlock(),item.getItemMeta().getEnchantLevel(Enchantment.SILK_TOUCH)).isEmpty()) {
                 items = new SilkTouchSimulator().simulate(p,e.getBlock(),item.getItemMeta().getEnchantLevel(Enchantment.SILK_TOUCH));
             } else  {
                 items = new ArrayList<>(e.getBlock().getDrops(p.getItemInHand()));
                 if (item.hasItemMeta() && item.getItemMeta().hasEnchant(Enchantment.LOOT_BONUS_BLOCKS)) items = new FortuneSimulator().simulate(p,e.getBlock(),item.getItemMeta().getEnchantLevel(Enchantment.LOOT_BONUS_BLOCKS));
-                items = items.stream().map(BreakRegistry::attemptSmelt).collect(Collectors.toList());
+                items = items.stream().map(it -> attemptSmelt(it,p)).collect(Collectors.toList());
             }
             boolean full = false;
             for (ItemStack i : items) {
@@ -49,8 +52,14 @@ public class BreakRegistry implements Listener {
             p.updateInventory();
         }
     }
-    public static ItemStack attemptSmelt(ItemStack item) {
-        if (AutoPicker.apc.autoSmelt() && SMELTABLES.contains(item.getType())) item.setType(Material.valueOf(item.getType().name().split("_")[0] + "_INGOT"));
+    private static ItemStack attemptSmelt(ItemStack item,Player p) {
+        if (AutoPicker.apc.autoSmelt() && p.hasPermission(AUTO_SMELT_PERMISSION) && SMELTABLES.contains(item.getType())) item.setType(Material.valueOf(item.getType().name().split("_")[0] + "_INGOT"));
         return item;
+    }
+    public static void setAutoPickerPlayer(Player p) {
+        AUTOPICKER_PLAYERS.put(p, AUTOPICKER_PLAYERS.containsKey(p)?!AUTOPICKER_PLAYERS.get(p):!AutoPicker.apc.isEnabled());
+    }
+    public static HashMap<Player,Boolean> getAutoPickerPlayers() {
+        return AUTOPICKER_PLAYERS;
     }
 }

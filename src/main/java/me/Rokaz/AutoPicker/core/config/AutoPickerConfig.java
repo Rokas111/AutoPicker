@@ -5,6 +5,8 @@ import me.Rokaz.AutoPicker.lib.config.Config;
 import me.Rokaz.AutoPicker.lib.config.add.ConfigSection;
 import me.Rokaz.AutoPicker.lib.config.file.FileSection;
 
+import java.io.IOException;
+
 public class AutoPickerConfig extends Config {
     public AutoPickerConfig() {
         super("config",new FileSection(AutoPicker.PLUGIN_FOLDER), true);
@@ -19,5 +21,13 @@ public class AutoPickerConfig extends Config {
     }
     public boolean autoSmelt() {
         return getYaml().getBoolean("AutoSmelt");
+    }
+    public void toggleAutoSmelt() {
+        getYaml().set("AutoSmelt", !autoSmelt());
+        try {
+            getYaml().save(getFile());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

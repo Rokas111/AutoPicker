@@ -1,5 +1,5 @@
 name: AutoPicker
 main: me.Rokaz.AutoPicker.core.AutoPicker
-version: 1.0
+version: 1.2.3
 author: Rokaz
 commands:
