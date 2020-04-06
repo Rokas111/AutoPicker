@@ -32,7 +32,7 @@ public class BreakRegistry implements Listener {
     public void onBreak(BlockBreakEvent e) {
         Player p = e.getPlayer();
         ItemStack item = p.getItemInHand();
-        if (!e.isCancelled() && (AUTOPICKER_PLAYERS.containsKey(p)|| AutoPicker.apc.isEnabled()) && (!AUTOPICKER_PLAYERS.containsKey(p) || AUTOPICKER_PLAYERS.get(p)) && p.getGameMode() == GameMode.SURVIVAL) {
+        if (!e.isCancelled() && (AUTOPICKER_PLAYERS.containsKey(p)|| AutoPicker.apc.isEnabled()) && (!AUTOPICKER_PLAYERS.containsKey(p) || AUTOPICKER_PLAYERS.get(p)) && p.getGameMode() == GameMode.SURVIVAL && AutoPicker.apc.getDisabledWorld().parallelStream().noneMatch(world -> p.getWorld().getName().equals(world))) {
             List<ItemStack> items;
             if (item.hasItemMeta() && item.getItemMeta().hasEnchant(Enchantment.SILK_TOUCH) && !new SilkTouchSimulator().simulate(p,e.getBlock(),item.getItemMeta().getEnchantLevel(Enchantment.SILK_TOUCH)).isEmpty()) {
                 items = new SilkTouchSimulator().simulate(p,e.getBlock(),item.getItemMeta().getEnchantLevel(Enchantment.SILK_TOUCH));
@@ -50,6 +50,9 @@ public class BreakRegistry implements Listener {
             e.setCancelled(true);
             e.getBlock().getLocation().getBlock().setType(Material.AIR);
             p.updateInventory();
+            p.giveExp(e.getExpToDrop());
+            item.setDurability((short)1);
+            p.setItemInHand(item);
         }
     }
     private static ItemStack attemptSmelt(ItemStack item,Player p) {

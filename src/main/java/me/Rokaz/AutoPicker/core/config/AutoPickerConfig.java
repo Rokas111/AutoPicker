@@ -6,6 +6,9 @@ import me.Rokaz.AutoPicker.lib.config.add.ConfigSection;
 import me.Rokaz.AutoPicker.lib.config.file.FileSection;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class AutoPickerConfig extends Config {
     public AutoPickerConfig() {
@@ -14,13 +17,17 @@ public class AutoPickerConfig extends Config {
     public ConfigSection getDefaults() {
         return new ConfigSection()
                 .add("AutoPicker",true)
-                .add("AutoSmelt",true);
+                .add("AutoSmelt",true)
+                .add("disabled_worlds", Collections.singletonList(""));
     }
     public boolean isEnabled() {
         return getYaml().getBoolean("AutoPicker");
     }
     public boolean autoSmelt() {
         return getYaml().getBoolean("AutoSmelt");
+    }
+    public List<String> getDisabledWorld() {
+        return getYaml().getStringList("disabled_worlds");
     }
     public void toggleAutoSmelt() {
         getYaml().set("AutoSmelt", !autoSmelt());

@@ -1,7 +1,6 @@
 package me.Rokaz.AutoPicker.core.cmd.cmds;
 
 import me.Rokaz.AutoPicker.core.AutoPicker;
-import me.Rokaz.AutoPicker.core.BreakRegistry;
 import me.Rokaz.AutoPicker.core.config.unit.MessageConfig;
 import me.Rokaz.AutoPicker.lib.cmd.Command;
 import org.bukkit.entity.Player;
