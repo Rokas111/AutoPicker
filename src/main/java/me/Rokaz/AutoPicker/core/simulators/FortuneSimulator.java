@@ -2,6 +2,7 @@ package me.Rokaz.AutoPicker.core.simulators;
 
 import me.Rokaz.AutoPicker.lib.legacy.Classes;
 import me.Rokaz.AutoPicker.lib.simulator.ISimulator;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -18,12 +19,11 @@ public class FortuneSimulator implements ISimulator {
         List<ItemStack> items = new ArrayList<>(drop.getDrops(p.getItemInHand()));
         Random r = new Random();
         return items.stream().map(item -> {
-            try {
-                Object block = Classes.getCBukkitClass("util.CraftMagicNumbers").getMethod("getBlock", Block.class).invoke(Classes.getCBukkitClass("util.CraftMagicNumbers"), drop);
-                item.setAmount((int)block.getClass().getMethod("getDropCount",Integer.TYPE,Random.class).invoke(block,level,r));
-            } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                e.printStackTrace();
+            int bonus = new Random().nextInt(level + 2) - 1;
+            if (bonus < 0) {
+                bonus = 0;
             }
+            item.setAmount(bonus == 0?item.getAmount():item.getAmount() * bonus);
             return item;
         }).collect(Collectors.toList());
     }

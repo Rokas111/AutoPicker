@@ -4,11 +4,13 @@ import me.Rokaz.AutoPicker.core.AutoPicker;
 import me.Rokaz.AutoPicker.lib.config.Config;
 import me.Rokaz.AutoPicker.lib.config.add.ConfigSection;
 import me.Rokaz.AutoPicker.lib.config.file.FileSection;
+import org.bukkit.ChatColor;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AutoPickerConfig extends Config {
     public AutoPickerConfig() {
@@ -18,6 +20,8 @@ public class AutoPickerConfig extends Config {
         return new ConfigSection()
                 .add("AutoPicker",true)
                 .add("AutoSmelt",true)
+                .add("itemAdditions.name","")
+                .add("itemAdditions.lore", Collections.singletonList(""))
                 .add("disabled_worlds", Collections.singletonList(""));
     }
     public boolean isEnabled() {
@@ -28,6 +32,12 @@ public class AutoPickerConfig extends Config {
     }
     public List<String> getDisabledWorld() {
         return getYaml().getStringList("disabled_worlds");
+    }
+    public String getItemAdditionName() {
+        return ChatColor.translateAlternateColorCodes('&',getYaml().getString("itemAdditions.name"));
+    }
+    public List<String> getItemAdditionLore() {
+        return getYaml().getStringList("itemAdditions.lore").stream().map(line -> ChatColor.translateAlternateColorCodes('&',line)).collect(Collectors.toList());
     }
     public void toggleAutoSmelt() {
         getYaml().set("AutoSmelt", !autoSmelt());

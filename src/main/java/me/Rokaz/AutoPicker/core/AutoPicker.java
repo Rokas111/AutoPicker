@@ -12,6 +12,8 @@ import me.Rokaz.AutoPicker.lib.config.IConfig;
 import me.Rokaz.AutoPicker.lib.datatypes.Message;
 import me.Rokaz.AutoPicker.lib.metrics.Metrics;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;

@@ -2,9 +2,8 @@ package me.Rokaz.AutoPicker.lib.simulator.material;
 
 import me.Rokaz.AutoPicker.lib.legacy.SinceVersion;
 import me.Rokaz.AutoPicker.lib.legacy.Version;
-import org.bukkit.Material;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,8 +37,8 @@ public enum SilkTouchMaterial {
     ENDER_CHEST(new SinceVersion(Version.MC1_8_R3,"ENDER_CHEST.0")),
     GLASS(new SinceVersion(Version.MC1_8_R3,"GLASS.0")),
     GLASS_PANE(new SinceVersion(Version.MC1_8_R3,"THIN_GLASS.0"),new SinceVersion(Version.MC1_13_R1,"GLASS_PANE.0")),
-    STAINED_GLASS_PANE(new SinceVersion(Version.MC1_8_R3,"STAINED_GLASS_PANE.0")),
-    STAINED_GLASS(new SinceVersion(Version.MC1_8_R3,"STAINED_GLASS.0")),
+    STAINED_GLASS_PANE(new SinceVersion(Version.MC1_8_R3,"STAINED_GLASS_PANE.0"),new SinceVersion(Version.MC1_13_R1,"LEGACY_STAINED_GLASS_PANE.0")),
+    STAINED_GLASS(new SinceVersion(Version.MC1_8_R3,"STAINED_GLASS.0"),new SinceVersion(Version.MC1_13_R1,"LEGACY_STAINED_GLASS.0")),
     GLOWSTONE(new SinceVersion(Version.MC1_8_R3,"GLOWSTONE.0")),
     GRASS(new SinceVersion(Version.MC1_8_R3,"GRASS.0"),new SinceVersion(Version.MC1_13_R1,"GRASS_BLOCK.0")),
     GRAVEL(new SinceVersion(Version.MC1_8_R3,"GRAVEL.0")),
@@ -47,14 +46,14 @@ public enum SilkTouchMaterial {
     PODZOL(new SinceVersion(Version.MC1_8_R3,"DIRT.2"),new SinceVersion(Version.MC1_13_R1,"PODZOL.0")),
     ICE(new SinceVersion(Version.MC1_8_R3,"ICE.0")),
     LAPIS_ORE(new SinceVersion(Version.MC1_8_R3,"LAPIS_ORE.0")),
-    LEAVES(new SinceVersion(Version.MC1_8_R3,"LEAVES.0")),
-    LEAVES_2(new SinceVersion(Version.MC1_8_R3,"LEAVES_2.0")),
+    LEAVES(new SinceVersion(Version.MC1_8_R3,"LEAVES.0"),new SinceVersion(Version.MC1_13_R1,"LEGACY_LEAVES.0")),
+    LEAVES_2(new SinceVersion(Version.MC1_8_R3,"LEAVES_2.0"),new SinceVersion(Version.MC1_13_R1,"LEGACY_LEAVES_2.0")),
     MELON(new SinceVersion(Version.MC1_8_R3,"MELON.0")),
     MYCEL(new SinceVersion(Version.MC1_8_R3,"MYCEL.0"),new SinceVersion(Version.MC1_13_R1,"MYCELIUM.0")),
     QUARTZ_ORE(new SinceVersion(Version.MC1_8_R3,"QUARTZ_ORE.0"),new SinceVersion(Version.MC1_13_R1,"NETHER_QUARTZ_ORE.0")),
     BROWN_MUSHROOM(new SinceVersion(Version.MC1_8_R3,"HUGE_MUSHROOM_1.0"),new SinceVersion(Version.MC1_13_R1,"BROWN_MUSHROOM_BLOCK.0")),
     RED_MUSHROOM(new SinceVersion(Version.MC1_8_R3,"HUGE_MUSHROOM_2.0"),new SinceVersion(Version.MC1_13_R1,"RED_MUSHROOM_BLOCK.0")),
-    PACKED_ICE(new SinceVersion(Version.MC1_8_R3,"PACKED_ICE.0")),
+    PACKED_ICE(new SinceVersion(Version.MC1_8_R3,"PACKED_ICE.0"),new SinceVersion(Version.MC1_13_R1,"LEGACY_PACKED_ICE.0")),
     REDSTONE_ORE(new SinceVersion(Version.MC1_8_R3,"REDSTONE_ORE.0")),
     SEA_LANTERN(new SinceVersion(Version.MC1_8_R3,"SEA_LANTERN.0")),
     SNOW(new SinceVersion(Version.MC1_8_R3,"SNOW.0")),
@@ -65,17 +64,19 @@ public enum SilkTouchMaterial {
     private SilkTouchMaterial(SinceVersion... sinces) {
         this.sinces = Arrays.stream(sinces).filter(since -> since.getVersion().getVersionId() <= Version.getVersion().getVersionId()).collect(Collectors.toList());
     }
-    public ItemStack getMaterial() {
-        if (sinces.isEmpty()) return null;
-        SinceVersion s = null;
-        for (SinceVersion since: sinces) {
-            if (s == null || s.getVersion().getVersionId() < since.getVersion().getVersionId()) {
-                s = since;
-            }
-        }
-        return new ItemStack(Material.getMaterial(s.getOutput().split("\\.")[0]),1,(short)Integer.parseInt(s.getOutput().split("\\.")[1]));
+    public List<SinceVersion> getSinces() {
+        return this.sinces;
     }
     public static boolean isSupported(Block b) {
-        return Arrays.asList(SilkTouchMaterial.values()).stream().anyMatch(material -> material.getMaterial() != null && material.getMaterial().getType().equals(b.getType()) && material.getMaterial().getDurability() == b.getState().getData().getData());
+        return Arrays.asList(SilkTouchMaterial.values()).stream().anyMatch(material -> {
+            SinceVersion s = null;
+            for (SinceVersion since: material.getSinces()) {
+                if (s == null || s.getVersion().getVersionId() < since.getVersion().getVersionId()) {
+                    s = since;
+                }
+            }
+            if (s == null) return false;
+            return b.getType().name().equals(s.getOutput().split("\\.")[0]) && Integer.parseInt(s.getOutput().split("\\.")[1]) == b.getState().getData().getData();
+        });
     }
 }
