@@ -5,6 +5,7 @@ import me.Rokaz.AutoPicker.lib.config.Config;
 import me.Rokaz.AutoPicker.lib.config.add.ConfigSection;
 import me.Rokaz.AutoPicker.lib.config.file.FileSection;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -20,6 +21,8 @@ public class AutoPickerConfig extends Config {
         return new ConfigSection()
                 .add("AutoPicker",true)
                 .add("AutoSmelt",true)
+                .add("sounds.onMine","")
+                .add("sounds.inventoryFull","")
                 .add("itemAdditions.name","")
                 .add("itemAdditions.lore", Collections.singletonList(""))
                 .add("disabled_worlds", Collections.singletonList(""));
@@ -38,6 +41,12 @@ public class AutoPickerConfig extends Config {
     }
     public List<String> getItemAdditionLore() {
         return getYaml().getStringList("itemAdditions.lore").stream().map(line -> ChatColor.translateAlternateColorCodes('&',line)).collect(Collectors.toList());
+    }
+    public Sound getOnMineSound() {
+        return !getYaml().getString("sounds.onMine").isEmpty()?Sound.valueOf(getYaml().getString("sounds.onMine")):null;
+    }
+    public Sound getInventoryFullSound() {
+        return !getYaml().getString("sounds.inventoryFull").isEmpty()?Sound.valueOf(getYaml().getString("sounds.inventoryFull")):null;
     }
     public void toggleAutoSmelt() {
         getYaml().set("AutoSmelt", !autoSmelt());

@@ -1,17 +1,13 @@
 package me.Rokaz.AutoPicker.core.config;
 
+import lombok.NoArgsConstructor;
 import me.Rokaz.AutoPicker.lib.config.IConfig;
-import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@NoArgsConstructor
 public class ConfigManager {
     private final List<IConfig> configs = new ArrayList<>();
-    private Plugin pl;
-    public ConfigManager(Plugin pl) {
-        this.pl = pl;
-    }
     public void registerConfig(IConfig c) {
         configs.add(c);
     }

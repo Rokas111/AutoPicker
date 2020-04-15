@@ -12,8 +12,8 @@ public class AutoPickerAutoSmelt extends Command {
         super("AutoPicker.autopickerautosmelt", "enable/disable AutoSmelt", Arrays.asList(""), "apautosmelt");
     }
     public void run(Player p, String enteredCmd, String[] args) {
-        boolean current = AutoPicker.apc.autoSmelt();
-        AutoPicker.apc.toggleAutoSmelt();
-        if (!current) p.sendMessage(AutoPicker.mc.obtain(MessageConfig.SUCCESSFUL_ENABLE_AUTOSMELT,p).getMessage()); else p.sendMessage(AutoPicker.mc.obtain(MessageConfig.SUCCESSFUL_DISABLE_AUTOSMELT,p).getMessage());
+        boolean current = AutoPicker.pl.getAutoPickerConfig().autoSmelt();
+        AutoPicker.pl.getAutoPickerConfig().toggleAutoSmelt();
+        if (!current) p.sendMessage(AutoPicker.pl.getMessageConfig().obtain(MessageConfig.SUCCESSFUL_ENABLE_AUTOSMELT,p).getMessage()); else p.sendMessage(AutoPicker.pl.getMessageConfig().obtain(MessageConfig.SUCCESSFUL_DISABLE_AUTOSMELT,p).getMessage());
     }
 }

@@ -14,9 +14,9 @@ public class AutoPickerActivate extends Command {
         super("AutoPicker.autopickeractivate", "enable/disable the autopicker for yourself", Arrays.asList(""), "apactivate");
     }
     public void run(Player p, String enteredCmd, String[] args) {
-        boolean current = ((!BreakRegistry.getAutoPickerPlayers().isEmpty()&& BreakRegistry.getAutoPickerPlayers().containsKey(p)) || AutoPicker.apc.isEnabled()) && ((BreakRegistry.getAutoPickerPlayers().isEmpty() || !BreakRegistry.getAutoPickerPlayers().containsKey(p))||BreakRegistry.getAutoPickerPlayers().get(p));
+        boolean current = ((!BreakRegistry.getAutoPickerPlayers().isEmpty()&& BreakRegistry.getAutoPickerPlayers().containsKey(p)) || AutoPicker.pl.getAutoPickerConfig().isEnabled()) && ((BreakRegistry.getAutoPickerPlayers().isEmpty() || !BreakRegistry.getAutoPickerPlayers().containsKey(p))||BreakRegistry.getAutoPickerPlayers().get(p));
         BreakRegistry.setAutoPickerPlayer(p);
-        if (!current) p.sendMessage(AutoPicker.mc.obtain(MessageConfig.SUCCESSFUL_ENABLE_AUTOPICKER,p).getMessage()); else p.sendMessage(AutoPicker.mc.obtain(MessageConfig.SUCCESSFUL_DISABLE_AUTOPICKER,p).getMessage());
+        if (!current) p.sendMessage(AutoPicker.pl.getMessageConfig().obtain(MessageConfig.SUCCESSFUL_ENABLE_AUTOPICKER,p).getMessage()); else p.sendMessage(AutoPicker.pl.getMessageConfig().obtain(MessageConfig.SUCCESSFUL_DISABLE_AUTOPICKER,p).getMessage());
     }
 
 }

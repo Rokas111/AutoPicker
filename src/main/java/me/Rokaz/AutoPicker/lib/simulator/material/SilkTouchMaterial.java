@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,7 +66,7 @@ public enum SilkTouchMaterial {
         this.sinces = Arrays.stream(sinces).filter(since -> since.getVersion().getVersionId() <= Version.getVersion().getVersionId()).collect(Collectors.toList());
     }
     public List<SinceVersion> getSinces() {
-        return this.sinces;
+        return Collections.unmodifiableList(this.sinces);
     }
     public static boolean isSupported(Block b) {
         return Arrays.asList(SilkTouchMaterial.values()).stream().anyMatch(material -> {

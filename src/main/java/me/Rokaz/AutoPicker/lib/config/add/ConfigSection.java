@@ -4,11 +4,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.Rokaz.AutoPicker.lib.config.IConfig;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 @NoArgsConstructor
 public class ConfigSection {
-    @Getter private final HashMap<String,Object> keys = new HashMap<>();
+    private final HashMap<String,Object> keys = new HashMap<>();
     public ConfigSection add(String key, Object value) {
         keys.put(key, value);
         return this;
@@ -16,6 +18,9 @@ public class ConfigSection {
     public ConfigSection remove(String key) {
         keys.remove(key);
         return this;
+    }
+    public Map<String,Object> getKeys() {
+        return Collections.unmodifiableMap(keys);
     }
     public void addToConfig(IConfig c, String path) {
         keys.keySet().forEach(key -> {

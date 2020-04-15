@@ -1,6 +1,7 @@
 package me.Rokaz.AutoPicker.core;
 
 import com.google.common.collect.ImmutableMap;
+import lombok.Getter;
 import me.Rokaz.AutoPicker.core.cmd.CommandManager;
 import me.Rokaz.AutoPicker.core.cmd.cmds.AutoPickerActivate;
 import me.Rokaz.AutoPicker.core.cmd.cmds.AutoPickerAutoSmelt;
@@ -31,44 +32,43 @@ public class AutoPicker extends JavaPlugin {
             .put(MessageConfig.SUCCESSFUL_DISABLE_AUTOPICKER,new Message(ChatColor.GREEN +"" + ChatColor.BOLD + "Successfully disabled autopicker for yourself"))
             .put(MessageConfig.SUCCESSFUL_ENABLE_AUTOSMELT,new Message(ChatColor.GREEN +"" + ChatColor.BOLD + "Successfully enabled AutoSmelt"))
             .put(MessageConfig.SUCCESSFUL_DISABLE_AUTOSMELT,new Message(ChatColor.GREEN +"" + ChatColor.BOLD + "Successfully disabled AutoSmelt")).build());
-    public static CommandManager cm;
-    public static ConfigManager cgm;
-    public static MessageConfig mc;
-    public static AutoPickerConfig apc;
-    public static BreakRegistry br;
-    public static Metrics m;
-    static int brokenBlocks = 0;
+    public static AutoPicker pl;
+    @Getter private CommandManager commandManager;
+    @Getter private ConfigManager configManager;
+    @Getter private MessageConfig messageConfig;
+    @Getter private AutoPickerConfig autoPickerConfig;
+    @Getter private BreakRegistry breakRegistry;
+    private Metrics m;
     public void onEnable() {
-        cm = new CommandManager(this);
-        br = new BreakRegistry(this);
-        cgm = new ConfigManager(this);
-        registerConfigs();
-        registerCommands();
+        pl = this;
+        commandManager = new CommandManager();
+        breakRegistry = new BreakRegistry();
+        configManager = new ConfigManager();
+        loadConfigs();
+        loadCommands();
         m = new Metrics(this,6878);
-        m.addCustomChart(new Metrics.SingleLineChart("blocksBroken",() -> {
-            int bb = brokenBlocks;
-            brokenBlocks = 0;
-            return brokenBlocks;
-        }));
     }
-    private void registerConfigs() {
-        apc = new AutoPickerConfig();
-        mc = new MessageConfig();
-        cgm.registerConfig(apc);
-        cgm.registerConfig(mc);
+    public void onDisable() {
+        pl = null;
+    }
+    private void loadConfigs() {
+        autoPickerConfig = new AutoPickerConfig();
+        messageConfig = new MessageConfig();
+        configManager.registerConfig(autoPickerConfig);
+        configManager.registerConfig(messageConfig);
         setupDefaults();
     }
-    private void registerCommands() {
-        cm.registerCommand(new AutoPickerReload());
-        cm.registerCommand(new AutoPickerActivate());
-        cm.registerCommand(new AutoPickerAutoSmelt());
+    private void loadCommands() {
+        commandManager.registerCommand(new AutoPickerReload());
+        commandManager.registerCommand(new AutoPickerActivate());
+        commandManager.registerCommand(new AutoPickerAutoSmelt());
     }
     private void setupDefaults() {
         setupMessageDefaults();
     }
     private void setupMessageDefaults() {
-        MESSAGE_DEFAULTS.forEach((key,m) -> mc.addDefault(key,m));
-        mc.setup();
+        MESSAGE_DEFAULTS.forEach((key,m) -> messageConfig.addDefault(key,m));
+        messageConfig.setup();
     }
 
 }

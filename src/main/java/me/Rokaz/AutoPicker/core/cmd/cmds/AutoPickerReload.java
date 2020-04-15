@@ -13,7 +13,7 @@ public class AutoPickerReload extends Command {
         super("AutoPicker.autopickerreload", "Reloads all AutoPicker configs", Arrays.asList(""), "apreload");
     }
     public void run(Player p, String enteredCmd, String[] args) {
-        AutoPicker.cgm.reloadConfigs();
-        p.sendMessage(AutoPicker.mc.obtain(MessageConfig.SUCCESSFUL_RELOAD_KEY,p).getMessage());
+        AutoPicker.pl.getConfigManager().reloadConfigs();
+        p.sendMessage(AutoPicker.pl.getMessageConfig().obtain(MessageConfig.SUCCESSFUL_RELOAD_KEY,p).getMessage());
     }
 }
